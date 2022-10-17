@@ -10,11 +10,11 @@ import { ShopService } from 'src/shop/shop.service';
 
 @Injectable()
 export class BasketService {
+  private itemsInBasket: AddProductDto[] = [];
+
   constructor(
     @Inject(forwardRef(() => ShopService)) private shopService: ShopService,
   ) {}
-
-  private itemsInBasket: AddProductDto[] = [];
 
   addProductToBasket(item: AddProductDto): AddProductToBasketResponse {
     const { count, name } = item;
@@ -63,15 +63,12 @@ export class BasketService {
       };
     }
 
-    return this.itemsInBasket
+    const sum = this.itemsInBasket
       .map(
         (item) =>
           this.shopService.getPriceOfProduct(item.name) * item.count * 1.23,
       )
       .reduce((prev, curr) => prev + curr, 0);
-  }
-
-  countPromo(): number {
-    return this.getTotalPrice() > 10 ? 1 : 0;
+    return sum > 100 ? sum * 0.95 : sum;
   }
 }
