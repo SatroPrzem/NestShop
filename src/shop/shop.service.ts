@@ -1,24 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { GetListOfProductsResponse } from '../interfaces/shop';
+import { BasketService } from '../basket/basket.service';
 
 @Injectable()
 export class ShopService {
+  constructor(
+    @Inject(forwardRef(() => BasketService))
+    private basketService: BasketService,
+  ) {}
+
   getProducts(): GetListOfProductsResponse {
     return [
       {
         name: 'ogórki kiszone',
         description: 'Fantastyczne kiszone ogórki ',
-        price: 8.49,
+        price: 8.49 - this.basketService.countPromo(),
       },
       {
         name: 'ogórki gruntowe',
         description: 'Prosto z ziemi ',
-        price: 5.2,
+        price: 5.2 - this.basketService.countPromo(),
       },
       {
         name: 'ogórki afrykańskie',
         description: 'Bardzo egzotyczne ogórki ',
-        price: 9.99,
+        price: 9.99 - this.basketService.countPromo(),
       },
     ];
   }
