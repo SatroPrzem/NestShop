@@ -4,9 +4,27 @@ import { AppService } from './app.service';
 import { BasketModule } from './basket/basket.module';
 import { ShopModule } from './shop/shop.module';
 import { UsersModule } from './users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import dbConfiguration from './config/db.config';
 
 @Module({
-  imports: [BasketModule, ShopModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [dbConfiguration],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        ...configService.get('database'),
+      }),
+    }),
+    BasketModule,
+    ShopModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
