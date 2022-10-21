@@ -9,14 +9,10 @@ export default registerAs('database', () => {
     username: process.env.DB_MAIN_USER,
     password: process.env.DB_MAIN_PASSWORD,
     database: process.env.DB_MAIN_DATABASE,
-    autoLoadEntities: true,
+    // autoLoadEntities: true,
     bigNumberStrings: false,
     synchronize: true,
     // synchronize: process.env.MODE === "dev",
-    entities: ['src/**/*.entity.ts'],
-    migrations: ['src/migrations/*{.ts,.js}'],
-    cli: {
-      migrationsDir: 'src/migrations',
-    },
+    entities: ['dist/**/**/*.entity.{ts,js}'],
   };
 });
