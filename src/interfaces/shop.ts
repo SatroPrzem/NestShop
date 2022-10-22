@@ -5,3 +5,16 @@ export interface ShopItem {
 }
 
 export type GetListOfProductsResponse = ShopItem[];
+
+export type GetOneProductResponse = ShopItem;
+
+export type RemoveProductFromDbResponse =
+  | {
+      isSuccess: true;
+      index: string;
+    }
+  | {
+      isSuccess: false;
+    };
+
+export type CreateProductResponse = ShopItem;

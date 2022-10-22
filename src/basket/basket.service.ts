@@ -9,7 +9,7 @@ import {
 import { ShopService } from 'src/shop/shop.service';
 
 @Injectable({
-  scope: Scope.REQUEST,
+  // scope: Scope.REQUEST,
 })
 export class BasketService {
   private itemsInBasket: AddProductDto[] = [];
@@ -19,7 +19,7 @@ export class BasketService {
   ) {}
 
   addProductToBasket(item: AddProductDto): AddProductToBasketResponse {
-    const { count, name } = item;
+    const { count, name, id } = item;
     if (
       typeof name !== 'string' ||
       name === '' ||
@@ -31,6 +31,8 @@ export class BasketService {
     }
 
     this.itemsInBasket.push(item);
+
+    this.shopService.addBoughtCounter(id);
 
     return {
       isSuccess: true,
@@ -50,7 +52,7 @@ export class BasketService {
     return this.itemsInBasket;
   }
 
-  getTotalPrice(): GetTotalPriceResponse {
+  async getTotalPrice(): Promise<GetTotalPriceResponse> {
     if (
       !this.itemsInBasket.every((item) =>
         this.shopService.hasProduct(item.name),
@@ -65,12 +67,16 @@ export class BasketService {
       };
     }
 
-    const sum = this.itemsInBasket
-      .map(
-        (item) =>
-          this.shopService.getPriceOfProduct(item.name) * item.count * 1.23,
+    const sum = (
+      await Promise.all(
+        this.itemsInBasket.map(
+          async (item) =>
+            (await this.shopService.getPriceOfProduct(item.name)) *
+            item.count *
+            1.23,
+        ),
       )
-      .reduce((prev, curr) => prev + curr, 0);
+    ).reduce((prev, curr) => prev + curr, 0);
     return sum > 100 ? sum * 0.95 : sum;
   }
 }
