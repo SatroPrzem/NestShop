@@ -11,6 +11,6 @@ export default registerAs('database', () => {
     database: process.env.DB_MAIN_DATABASE,
     entities: ['dist/**/**/*.entity.{ts,js}'],
     bigNumberStrings: false,
-    synchronize: false,
+    synchronize: true,
   };
 });

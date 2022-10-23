@@ -13,6 +13,7 @@ import {
   CreateProductResponse,
   GetListOfProductsResponse,
   GetOneProductResponse,
+  GetPaginatedListOfProductsResponse,
   RemoveProductFromDbResponse,
 } from '../interfaces/shop';
 import { ShopService } from './shop.service';
@@ -21,7 +22,7 @@ import { ShopService } from './shop.service';
   path: '/shop',
   // domyślnie localhost
   // host: ':name.lvh.me',
-  scope: Scope.REQUEST,
+  // scope: Scope.REQUEST,
 })
 export class ShopController {
   onApplicationShutdown() {
@@ -43,6 +44,32 @@ export class ShopController {
     return this.shopService.getProducts();
   }
 
+  @Post('/')
+  createNewProduct(): Promise<CreateProductResponse> {
+    return this.shopService.createDummyProduct();
+  }
+  @Get('/find')
+  testFindItem(): Promise<GetListOfProductsResponse> {
+    return this.shopService.findProducts();
+  }
+  @Get('/find/:sth')
+  testFindSthItem(
+    @Param('sth') sth: string,
+  ): Promise<GetListOfProductsResponse> {
+    return this.shopService.findSthProducts(sth);
+  }
+  @Get('/page/')
+  showFirstPaginatedPage(): Promise<GetPaginatedListOfProductsResponse> {
+    const PageNumber = 1;
+    return this.shopService.showPaginatedPage(PageNumber);
+  }
+  @Get('/page/:pageNumber')
+  showPaginatedPage(
+    @Param('pageNumber') pageNumber: number,
+  ): Promise<GetPaginatedListOfProductsResponse> {
+    return this.shopService.showPaginatedPage(pageNumber);
+  }
+
   @Get('/:id')
   getOneProduct(@Param('id') id: string): Promise<GetOneProductResponse> {
     return this.shopService.getOneProduct(id);
@@ -52,12 +79,6 @@ export class ShopController {
   removeProduct(@Param('id') id: string): Promise<RemoveProductFromDbResponse> {
     return this.shopService.removeProduct(id);
   }
-
-  @Post('/')
-  createNewProduct(): Promise<CreateProductResponse> {
-    return this.shopService.createDummyProduct();
-  }
-
   @Get('/test/:age')
   @Redirect()
   testRedirect(@Param('age') age: string) {

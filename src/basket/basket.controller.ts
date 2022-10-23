@@ -30,6 +30,11 @@ export class BasketController {
     return this.basketService.getTotalPrice();
   }
 
+  @Get('/cokolwiek')
+  sdawd(): string {
+    return 'cokolwiek';
+  }
+
   @Post('/')
   addProductToBasket(@Body() item: AddProductDto): AddProductToBasketResponse {
     return this.basketService.addProductToBasket(item);

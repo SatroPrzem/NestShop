@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import {
   GetListOfProductsResponse,
+  GetPaginatedListOfProductsResponse,
   RemoveProductFromDbResponse,
 } from '../interfaces/shop';
 import { BasketService } from '../basket/basket.service';
@@ -61,5 +62,38 @@ export class ShopService {
     const item = await this.shopItemRepository.findOneByOrFail({ id });
     item.boughtCounter++;
     await this.shopItemRepository.save(item);
+  }
+
+  async findProducts() {
+    return await ShopItem.find({
+      where: {
+        description: 'Polskie',
+      },
+    });
+  }
+
+  async findSthProducts(sth: string) {
+    return await ShopItem.findBy({
+      description: sth,
+    });
+  }
+
+  async showPaginatedPage(
+    pageNumber: number,
+  ): Promise<GetPaginatedListOfProductsResponse> {
+    const maxPerPage = 3;
+    const currentPage = pageNumber;
+
+    const [items, count] = await ShopItem.findAndCount({
+      skip: maxPerPage * (currentPage - 1),
+      take: maxPerPage,
+    });
+
+    const pagesCount = Math.ceil(count / maxPerPage);
+
+    return {
+      items,
+      pagesCount,
+    };
   }
 }

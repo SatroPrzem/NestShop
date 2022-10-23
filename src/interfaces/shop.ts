@@ -18,3 +18,8 @@ export type RemoveProductFromDbResponse =
     };
 
 export type CreateProductResponse = ShopItem;
+
+export interface GetPaginatedListOfProductsResponse {
+  items: ShopItem[];
+  pagesCount: number;
+}
