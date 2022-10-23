@@ -5,11 +5,11 @@ export class ShopItem extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
-    length: 60,
+    length: 44,
   })
   name: string;
   @Column({
-    length: 10000,
+    length: 9999,
     default: null,
     nullable: true,
   })
