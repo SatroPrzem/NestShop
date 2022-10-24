@@ -8,6 +8,7 @@ import { BasketService } from '../basket/basket.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopItem } from './shop-item.entity';
 import { Repository } from 'typeorm';
+import { ShopItemDetails } from './shop-item-details.entity';
 
 @Injectable()
 export class ShopService {
@@ -51,6 +52,19 @@ export class ShopService {
     newItem.description = 'test description';
 
     await this.shopItemRepository.save(newItem);
+
+    const details = new ShopItemDetails();
+    details.color = 'green';
+    details.width = 200;
+
+    await details.save();
+
+    newItem.details = details;
+
+    // same thing for training
+    // await this.shopItemRepository.save(newItem);
+    await newItem.save();
+
     return newItem;
   }
 
@@ -85,6 +99,7 @@ export class ShopService {
     const currentPage = pageNumber;
 
     const [items, count] = await ShopItem.findAndCount({
+      relations: ['details'],
       skip: maxPerPage * (currentPage - 1),
       take: maxPerPage,
     });
