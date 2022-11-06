@@ -7,7 +7,7 @@ import {
 import { BasketService } from '../basket/basket.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopItem } from './shop-item.entity';
-import { Repository } from 'typeorm';
+import { DataSource, getConnection, Repository } from 'typeorm';
 import { ShopItemDetails } from './shop-item-details.entity';
 
 @Injectable()
@@ -17,6 +17,7 @@ export class ShopService {
     private basketService: BasketService,
     @InjectRepository(ShopItem)
     private shopItemRepository: Repository<ShopItem>,
+    @Inject(DataSource) private dataSource: DataSource,
   ) {}
 
   async getProducts(): Promise<GetListOfProductsResponse> {
@@ -87,9 +88,19 @@ export class ShopService {
   }
 
   async findSthProducts(sth: string) {
-    return await ShopItem.findBy({
-      description: sth,
-    });
+    const data = await this.dataSource
+      .createQueryBuilder()
+      .select('shopItem')
+      .from(ShopItem, 'shopItem')
+      .where('shopItem.description LIKE :searchTerm', {
+        searchTerm: `%${sth}%`,
+      })
+      .getMany();
+
+    return data;
+    // return await ShopItem.findBy({
+    //   description: sth,
+    // });
   }
 
   async showPaginatedPage(
