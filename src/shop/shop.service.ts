@@ -122,4 +122,8 @@ export class ShopService {
       pagesCount,
     };
   }
+
+  async getOneItem(id: string): Promise<ShopItem> {
+    return await ShopItem.findOne({ where: { id: id } });
+  }
 }

@@ -12,9 +12,11 @@ import { ShopItemDetails } from './shop-item-details.entity';
 import { JoinColumn } from 'typeorm';
 import { ShopSet } from './shop-set.entity';
 import { JoinTable } from 'typeorm';
+import { ShopItemInterface } from '../interfaces/shop';
+import { ItemInBasket } from 'src/basket/item-in-basket.entity';
 
 @Entity()
-export class ShopItem extends BaseEntity {
+export class ShopItem extends BaseEntity implements ShopItemInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -64,4 +66,7 @@ export class ShopItem extends BaseEntity {
   @ManyToMany((type) => ShopSet, (entity) => entity.items)
   @JoinTable()
   sets: ShopSet[];
+
+  @OneToOne((type) => ItemInBasket, (entity) => entity.shopItem)
+  itemInBasket: ItemInBasket;
 }

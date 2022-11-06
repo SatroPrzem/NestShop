@@ -21,7 +21,7 @@ export class BasketController {
   constructor(@Inject(BasketService) private basketService: BasketService) {}
 
   @Get('/')
-  showProductsInBasket(): ShowProductsInBasketResponse {
+  showProductsInBasket(): Promise<ShowProductsInBasketResponse> {
     return this.basketService.showProductsInBasket();
   }
 
@@ -36,14 +36,21 @@ export class BasketController {
   }
 
   @Post('/')
-  addProductToBasket(@Body() item: AddProductDto): AddProductToBasketResponse {
+  addProductToBasket(
+    @Body() item: AddProductDto,
+  ): Promise<AddProductToBasketResponse> {
     return this.basketService.addProductToBasket(item);
+  }
+
+  @Delete('/all')
+  removeAllProductsFromBasket(): Promise<RemoveProductFromBasketResponse> {
+    return this.basketService.clearBasket();
   }
 
   @Delete('/:index')
   removeProductFromBasket(
-    @Param('index') index: string,
-  ): RemoveProductFromBasketResponse {
-    return this.basketService.removeProductFromBasket(Number(index));
+    @Param('index') id: string,
+  ): Promise<RemoveProductFromBasketResponse> {
+    return this.basketService.removeProductFromBasket(id);
   }
 }

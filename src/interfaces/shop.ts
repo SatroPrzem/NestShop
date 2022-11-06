@@ -1,12 +1,12 @@
-export interface ShopItem {
+export interface ShopItemInterface {
   name: string;
   description: string;
   price: number;
 }
 
-export type GetListOfProductsResponse = ShopItem[];
+export type GetListOfProductsResponse = ShopItemInterface[];
 
-export type GetOneProductResponse = ShopItem;
+export type GetOneProductResponse = ShopItemInterface;
 
 export type RemoveProductFromDbResponse =
   | {
@@ -17,9 +17,9 @@ export type RemoveProductFromDbResponse =
       isSuccess: false;
     };
 
-export type CreateProductResponse = ShopItem;
+export type CreateProductResponse = ShopItemInterface;
 
 export interface GetPaginatedListOfProductsResponse {
-  items: ShopItem[];
+  items: ShopItemInterface[];
   pagesCount: number;
 }

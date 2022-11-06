@@ -9,6 +9,7 @@ export const connectionSource = new DataSource({
   password: '',
   database: 'shopnest',
   entities: ['./dist/**/**.entity{.ts,.js}'],
+  synchronize: true,
   bigNumberStrings: false,
   migrationsTableName: 'migrations',
   migrations: ['migrations/*.ts'],
